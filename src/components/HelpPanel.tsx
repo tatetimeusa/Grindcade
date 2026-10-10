@@ -87,7 +87,7 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
     <div className="account-layer" onClick={onClose}>
       <div className="account-card help-card" ref={cardRef} onClick={(e) => e.stopPropagation()}>
         <div className="account-head">
-          <span className="account-title">TERMDECK(1) · HELP</span>
+          <span className="account-title">GRINDCADE(1) · HELP</span>
           <button className="reminder-btn" onClick={onClose} title="Close (Esc)">
             ✕
           </button>

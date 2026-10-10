@@ -46,7 +46,7 @@ export function TopBar() {
   return (
     <header className="topbar">
       <div className="brand">
-        TERMDECK<span className="cursor">_</span>
+        GRINDCADE<span className="cursor">_</span>
       </div>
       <div className="topbar-right">
         <span className={`tb-timer ${focusMode}${running ? ' on' : ''}`}>

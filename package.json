@@ -1,9 +1,9 @@
 {
-  "name": "termdeck",
+  "name": "grindcade",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A retro-terminal command center for tasks, kanban, calendar, focus timer and a Snake arcade.",
-  "author": "TermDeck",
+  "author": "Grindcade",
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {
@@ -12,8 +12,8 @@
     "preview": "vite preview",
     "electron": "electron .",
     "app": "vite build && electron .",
-    "package": "vite build && electron-packager . TermDeck --platform=win32 --arch=x64 --out=release --overwrite --icon=build/icon.ico --prune=true --ignore=\"(^/src$|^/release$|tsconfig.*|vite.config.*|\\.zip$|\\.md$|^/build$|^/\\.env$|^/\\.github$|make-icon\\.ps1)\"",
-    "package:mac": "vite build && electron-packager . TermDeck --platform=darwin --arch=universal --out=release --overwrite --icon=build/icon.icns --app-bundle-id=com.tatetime.termdeck --prune=true --ignore=\"(^/src$|^/release$|tsconfig.*|vite.config.*|\\.zip$|\\.md$|^/build$|^/\\.env$|^/\\.github$|make-icon\\.ps1)\"",
+    "package": "vite build && electron-packager . Grindcade --platform=win32 --arch=x64 --out=release --overwrite --icon=build/icon.ico --prune=true --ignore=\"(^/src$|^/release$|tsconfig.*|vite.config.*|\\.zip$|\\.md$|^/build$|^/\\.env$|^/\\.github$|make-icon\\.ps1)\"",
+    "package:mac": "vite build && electron-packager . Grindcade --platform=darwin --arch=universal --out=release --overwrite --icon=build/icon.icns --app-bundle-id=com.tatetime.termdeck --prune=true --ignore=\"(^/src$|^/release$|tsconfig.*|vite.config.*|\\.zip$|\\.md$|^/build$|^/\\.env$|^/\\.github$|make-icon\\.ps1)\"",
     "dist": "vite build && electron-builder --win"
   },
   "dependencies": {
@@ -34,7 +34,7 @@
   },
   "build": {
     "appId": "com.termdeck.app",
-    "productName": "TermDeck",
+    "productName": "Grindcade",
     "directories": {
       "output": "release"
     },
@@ -53,7 +53,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "TermDeck"
+      "shortcutName": "Grindcade"
     }
   }
 }

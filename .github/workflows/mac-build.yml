@@ -35,18 +35,18 @@ jobs:
       - run: npm run package:mac
 
       - name: Ad-hoc sign (Apple Silicon refuses unsigned binaries)
-        run: codesign --force --deep -s - "release/TermDeck-darwin-universal/TermDeck.app"
+        run: codesign --force --deep -s - "release/Grindcade-darwin-universal/Grindcade.app"
 
       - name: Zip preserving symlinks and exec bits
-        run: ditto -c -k --keepParent "release/TermDeck-darwin-universal/TermDeck.app" TermDeck-mac-universal.zip
+        run: ditto -c -k --keepParent "release/Grindcade-darwin-universal/Grindcade.app" Grindcade-mac-universal.zip
 
       - uses: actions/upload-artifact@v7
         with:
-          name: TermDeck-mac-universal
-          path: TermDeck-mac-universal.zip
+          name: Grindcade-mac-universal
+          path: Grindcade-mac-universal.zip
 
       - name: Attach to the release on tag builds
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v3
         with:
-          files: TermDeck-mac-universal.zip
+          files: Grindcade-mac-universal.zip

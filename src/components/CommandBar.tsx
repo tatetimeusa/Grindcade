@@ -143,7 +143,7 @@ export function CommandBar() {
   return (
     <form className="cmdbar" onSubmit={run}>
       <span className="cmd-prompt">
-        termdeck<span className="cmd-mod"> {activeModule}</span> &gt;
+        grindcade<span className="cmd-mod"> {activeModule}</span> &gt;
       </span>
       <input
         ref={ref}

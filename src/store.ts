@@ -35,7 +35,7 @@ function sampleTasks(): Task[] {
     {
       ...base,
       id: uid(),
-      title: 'welcome to termdeck. this task is also on BOARD (2) and CALENDAR (3)',
+      title: 'welcome to grindcade. this task is also on BOARD (2) and CALENDAR (3)',
       priority: 'high',
       due: today,
       createdAt: now,
@@ -88,7 +88,7 @@ function sampleNotes(): Note[] {
   return [
     {
       id: uid(),
-      title: 'Welcome to TermDeck. Delete me.',
+      title: 'Welcome to Grindcade. Delete me.',
       body: WELCOME_BODY,
       createdAt: now,
       updatedAt: now,

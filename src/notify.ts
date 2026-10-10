@@ -19,7 +19,7 @@ export function notifyReminder(text: string, opts: { missed: boolean; scheduledF
   const body = opts.missed ? `MISSED (was ${fmtClockTime(opts.scheduledFor)}): ${text}` : text;
   try {
     // silent — the in-app chime handles sound (and respects the SND toggle)
-    new Notification('TermDeck reminder', { body, silent: true });
+    new Notification('Grindcade reminder', { body, silent: true });
   } catch {
     // some environments throw instead of ignoring; a lost toast is fine
   }

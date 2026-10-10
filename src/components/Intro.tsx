@@ -3,11 +3,11 @@ import { useStore } from '../store';
 import { playWhoosh } from '../sound';
 
 // Boot sequence: fly down a glowing green wireframe tunnel, accelerate into a
-// flash, then land on the solid TERMDECK_ wordmark before dissolving into the app.
+// flash, then land on the solid GRINDCADE_ wordmark before dissolving into the app.
 const FLASH_AT = 1750; // ms — tunnel hits top speed and flashes white
 const LOGO_AT = 1900; // ms — the solid wordmark appears
 const TOTAL = 2500; // ms — overlay begins its fade-out
-const BRAND = 'TERMDECK';
+const BRAND = 'GRINDCADE';
 
 // green-only ring palette (a few shades for depth)
 const COLORS = ['#4ade80', '#4ade80', '#86efac', '#22c55e', '#a3e635'];

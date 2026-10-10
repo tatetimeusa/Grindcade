@@ -11,7 +11,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 600,
     backgroundColor: '#070a10',
-    title: 'TermDeck',
+    title: 'Grindcade',
     icon: path.join(__dirname, '..', 'build', 'icon.ico'),
     autoHideMenuBar: true,
     webPreferences: {
@@ -36,11 +36,17 @@ function createWindow() {
   });
 }
 
+// Keep the data folder from the TermDeck days. Electron names it after the
+// app, so without this the rename to Grindcade would open every existing user
+// on an empty deck. Must run before the single-instance lock, which lives in
+// this folder too.
+app.setPath('userData', path.join(app.getPath('appData'), 'termdeck'));
+
 // gives the app a stable identity so renderer Notifications become real
 // Windows toasts (and don't show up as a generic "electron.app" sender)
 if (process.platform === 'win32') app.setAppUserModelId('com.termdeck.app');
 
-// Only one TermDeck at a time. Every copy of the app reads the same Local
+// Only one Grindcade at a time. Every copy of the app reads the same Local
 // Storage profile, so two instances running together would each write the
 // whole store and the last one to save would win, quietly losing whatever
 // the other had done.
