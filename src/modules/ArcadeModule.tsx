@@ -95,6 +95,7 @@ export function ArcadeModule() {
 
   // FX toggled or status changed (overlays, game over): redraw the board
   useEffect(() => {
+    if (status !== 'playing') game.current?.releaseKeys?.();
     draw();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fxEnabled, status]);
@@ -164,10 +165,20 @@ export function ArcadeModule() {
         else start();
         return;
       }
+      // a held key repeats; games want the press (and the release, for a paddle)
+      if (e.repeat) {
+        if (statusRef.current === 'playing' && game.current) e.preventDefault();
+        return;
+      }
       if (statusRef.current === 'playing' && game.current?.key(e.key)) e.preventDefault();
     };
+    const onKeyUp = (e: KeyboardEvent) => game.current?.keyUp?.(e.key);
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('keyup', onKeyUp);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('keyup', onKeyUp);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

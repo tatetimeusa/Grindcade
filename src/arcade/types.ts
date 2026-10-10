@@ -17,6 +17,10 @@ export interface Game {
   // scale, since canvas shadows ignore the drawing scale
   draw: (glow: number) => void;
   key: (key: string) => boolean; // true when the game used the key
+  // games that care how long a key is held (a paddle) also get releases, and
+  // releaseKeys when play stops so nothing stays held through a pause
+  keyUp?: (key: string) => void;
+  releaseKeys?: () => void;
 }
 
 export interface GameDef {

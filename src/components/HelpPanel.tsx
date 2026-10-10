@@ -30,7 +30,9 @@ const KEYS: [string, string][] = [
   ['Arrows', 'CALENDAR: move the selected day (up/down is a week)'],
   ['◂ ▸ on a card', 'BOARD: move it to the next column (Tab to them)'],
   ['Space', 'ARCADE: start or pause the game'],
-  ['Arrows / WASD', 'ARCADE: steer (SNAKE) or change lanes (NIGHT DRIVE)'],
+  ['Arrows / WASD', 'ARCADE: steer (SNAKE), change lanes (NIGHT DRIVE), move the paddle (BRICKS)'],
+  ['Enter or ↓', 'ARCADE: drop the slab (STACK)'],
+  ['↑ or W', 'ARCADE: fire the laser or launch a stuck ball (BRICKS)'],
   ['Ctrl + / Ctrl -', 'make everything bigger or smaller (Cmd on Mac)'],
   ['Ctrl 0', 'back to the default size'],
 ];
