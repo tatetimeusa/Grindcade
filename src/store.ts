@@ -161,6 +161,7 @@ export interface CloudData {
   completedSessions: number;
   bankedBreakSeconds: number;
   bestSnake: number;
+  bestScores?: Record<string, number>; // optional: best per arcade game other than Snake
   settings: FocusSettings;
   scanlines: boolean;
   soundEnabled: boolean;
@@ -191,6 +192,8 @@ interface Store {
   completedSessions: number;
   bankedBreakSeconds: number;
   bestSnake: number;
+  bestScores: Record<string, number>; // every arcade game but Snake, which keeps bestSnake
+  arcadeGame: string; // last game picked in the ARCADE, per machine
   settings: FocusSettings;
 
   // focus garden
@@ -268,6 +271,8 @@ interface Store {
   // arcade
   spendBreak: (seconds: number) => void;
   setBestSnake: (n: number) => void;
+  setBestScore: (game: string, n: number) => void;
+  setArcadeGame: (game: string) => void;
 }
 
 export const useStore = create<Store>()(
@@ -289,6 +294,8 @@ export const useStore = create<Store>()(
       completedSessions: 0,
       bankedBreakSeconds: 0,
       bestSnake: 0,
+      bestScores: {},
+      arcadeGame: 'snake',
       settings: { workMin: 25, breakMin: 5 },
 
       plant: null,
@@ -628,6 +635,13 @@ export const useStore = create<Store>()(
 
       setBestSnake: (n) => set({ bestSnake: n }),
 
+      // Snake's best stays in bestSnake so decks from before the arcade had
+      // more games (and older app versions) keep reading the right number
+      setBestScore: (game, n) =>
+        set((s) => (game === 'snake' ? { bestSnake: n } : { bestScores: { ...s.bestScores, [game]: n } })),
+
+      setArcadeGame: (game) => set({ arcadeGame: game }),
+
       offerPlants: () =>
         set((s) => (s.plant || s.plantChoices.length ? {} : { plantChoices: drawPlantChoices() })),
 
@@ -658,6 +672,8 @@ export const useStore = create<Store>()(
         completedSessions: s.completedSessions,
         bankedBreakSeconds: s.bankedBreakSeconds,
         bestSnake: s.bestSnake,
+        bestScores: s.bestScores,
+        arcadeGame: s.arcadeGame,
         settings: s.settings,
         plant: s.plant,
         finishedPlants: s.finishedPlants,

@@ -29,6 +29,7 @@ function buildBlob(s = useStore.getState()): CloudData {
     completedSessions: s.completedSessions,
     bankedBreakSeconds: s.bankedBreakSeconds,
     bestSnake: s.bestSnake,
+    bestScores: s.bestScores,
     settings: s.settings,
     plant: s.plant,
     finishedPlants: s.finishedPlants,

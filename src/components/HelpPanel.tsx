@@ -29,8 +29,8 @@ const KEYS: [string, string][] = [
   ['Tab / Shift+Tab', 'move between buttons and boxes; Enter or Space presses'],
   ['Arrows', 'CALENDAR: move the selected day (up/down is a week)'],
   ['◂ ▸ on a card', 'BOARD: move it to the next column (Tab to them)'],
-  ['Space', 'ARCADE: start or pause Snake'],
-  ['Arrows / WASD', 'ARCADE: steer'],
+  ['Space', 'ARCADE: start or pause the game'],
+  ['Arrows / WASD', 'ARCADE: steer (SNAKE) or change lanes (NIGHT DRIVE)'],
   ['Ctrl + / Ctrl -', 'make everything bigger or smaller (Cmd on Mac)'],
   ['Ctrl 0', 'back to the default size'],
 ];

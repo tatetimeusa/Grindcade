@@ -2,151 +2,124 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { Panel } from '../components/Panel';
 import { fmtTimer } from '../util';
+import { GAMES, findGame } from '../arcade';
+import { ARCADE_SIZE, type Game } from '../arcade/types';
 
-const CELLS = 21;
-const CELL = 20;
-const SIZE = CELLS * CELL; // 420px board
-const SPEED = 110; // ms per step
-
-type P = { x: number; y: number };
 type Status = 'idle' | 'playing' | 'paused' | 'over';
 
 export function ArcadeModule() {
   const banked = useStore((s) => s.bankedBreakSeconds);
   const spendBreak = useStore((s) => s.spendBreak);
-  const best = useStore((s) => s.bestSnake);
-  const setBest = useStore((s) => s.setBestSnake);
+  const gameId = useStore((s) => s.arcadeGame);
+  const setGameId = useStore((s) => s.setArcadeGame);
+  const best = useStore((s) => (s.arcadeGame === 'snake' ? s.bestSnake : (s.bestScores[s.arcadeGame] ?? 0)));
+  const setBest = useStore((s) => s.setBestScore);
   const fxEnabled = useStore((s) => s.fxEnabled);
 
+  const def = findGame(gameId);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const game = useRef<Game | null>(null);
   const [status, setStatus] = useState<Status>('idle');
   const [score, setScore] = useState(0);
-
-  // mutable game state kept in refs so the interval loop never goes stale
-  const snake = useRef<P[]>([]);
-  const dir = useRef<P>({ x: 1, y: 0 });
-  const nextDir = useRef<P>({ x: 1, y: 0 });
-  const food = useRef<P>({ x: 5, y: 5 });
   const statusRef = useRef<Status>('idle');
   statusRef.current = status;
 
-  const randFood = (sn: P[]): P => {
-    let p: P;
-    do {
-      p = { x: Math.floor(Math.random() * CELLS), y: Math.floor(Math.random() * CELLS) };
-    } while (sn.some((s) => s.x === p.x && s.y === p.y));
-    return p;
-  };
+  const boxRef = useRef<HTMLDivElement>(null);
+  const sideRef = useRef<HTMLDivElement>(null);
+  const [board, setBoard] = useState(ARCADE_SIZE); // on-screen size in CSS px
+  const [dpr, setDpr] = useState(window.devicePixelRatio); // changes with Ctrl +/- zoom
+  const scale = useRef(1); // canvas pixels per game unit
 
-  const draw = () => {
+  const glow = () => (useStore.getState().fxEnabled ? scale.current : 0);
+  const draw = () => game.current?.draw(glow());
+
+  // the board takes all the room the panel has beside the side column
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const measure = () => {
+      const gap = 18;
+      const side = sideRef.current?.offsetWidth ?? 240;
+      const fit = Math.min(box.clientHeight, box.clientWidth - side - gap);
+      setBoard(Math.max(280, Math.floor(fit)));
+      setDpr(window.devicePixelRatio);
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(box);
+    measure();
+    return () => ro.disconnect();
+  }, []);
+
+  // keep the canvas sharp: real pixels to match its size (and the zoom), with
+  // the games still drawing in 420 units. Resizing a canvas clears it and its
+  // scale, so set the scale again and redraw.
+  useEffect(() => {
+    const cv = canvasRef.current;
+    const ctx = cv?.getContext('2d');
+    if (!cv || !ctx) return;
+    const px = Math.round(board * dpr);
+    cv.width = px;
+    cv.height = px;
+    scale.current = px / ARCADE_SIZE;
+    ctx.setTransform(scale.current, 0, 0, scale.current, 0, 0);
+    draw();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [board, dpr]);
+
+  // build the picked game on its canvas; a fresh one on every switch
+  useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d');
     if (!ctx) return;
-    ctx.fillStyle = '#080c14';
-    ctx.fillRect(0, 0, SIZE, SIZE);
-
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.05)';
-    ctx.lineWidth = 1;
-    for (let i = 1; i < CELLS; i++) {
-      ctx.beginPath();
-      ctx.moveTo(i * CELL, 0);
-      ctx.lineTo(i * CELL, SIZE);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, i * CELL);
-      ctx.lineTo(SIZE, i * CELL);
-      ctx.stroke();
-    }
-
-    const f = food.current;
-    ctx.fillStyle = '#2dd4ee';
-    // FX off: same board, no neon blur
-    const glow = useStore.getState().fxEnabled ? 1 : 0;
-    ctx.shadowColor = '#2dd4ee';
-    ctx.shadowBlur = 12 * glow;
-    ctx.fillRect(f.x * CELL + 4, f.y * CELL + 4, CELL - 8, CELL - 8);
-
-    snake.current.forEach((s, i) => {
-      ctx.fillStyle = i === 0 ? '#d4ff7a' : '#a3e635';
-      ctx.shadowColor = '#a3e635';
-      ctx.shadowBlur = (i === 0 ? 14 : 6) * glow;
-      ctx.fillRect(s.x * CELL + 1, s.y * CELL + 1, CELL - 2, CELL - 2);
+    game.current = def.create(ctx, {
+      setScore,
+      gameOver: () => setStatus('over'),
     });
-    ctx.shadowBlur = 0;
-  };
-
-  const reset = () => {
-    const mid = Math.floor(CELLS / 2);
-    snake.current = [
-      { x: mid, y: mid },
-      { x: mid - 1, y: mid },
-      { x: mid - 2, y: mid },
-    ];
-    dir.current = { x: 1, y: 0 };
-    nextDir.current = { x: 1, y: 0 };
-    food.current = randFood(snake.current);
+    game.current.reset();
     setScore(0);
-  };
+    setStatus('idle');
+    draw();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [def.id]);
 
   const start = () => {
-    if (useStore.getState().bankedBreakSeconds <= 0) return;
-    reset();
+    if (useStore.getState().bankedBreakSeconds <= 0 || !game.current) return;
+    game.current.reset();
+    setScore(0);
     setStatus('playing');
   };
 
-  // draw an idle board on first mount
-  useEffect(() => {
-    reset();
-    draw();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const pick = (id: string) => {
+    if (statusRef.current === 'playing') return;
+    setGameId(id);
+  };
 
-  // FX toggled while the board is showing: redraw with or without the glow
+  // FX toggled or status changed (overlays, game over): redraw the board
   useEffect(() => {
     draw();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fxEnabled]);
-
-  // redraw on status transitions (pause overlay, game over, etc.)
-  useEffect(() => {
-    draw();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [fxEnabled, status]);
 
   // record a new high score
   useEffect(() => {
-    if (status === 'over' && score > best) setBest(score);
+    if (status === 'over' && score > best) setBest(def.id, score);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
-  // the game loop — runs only while playing
+  // the game loop, one frame per screen refresh while playing
   useEffect(() => {
     if (status !== 'playing') return;
-    const id = setInterval(() => {
-      dir.current = nextDir.current;
-      const head = snake.current[0];
-      const nh = { x: head.x + dir.current.x, y: head.y + dir.current.y };
-
-      if (nh.x < 0 || nh.y < 0 || nh.x >= CELLS || nh.y >= CELLS) {
-        setStatus('over');
-        return;
-      }
-      if (snake.current.some((s) => s.x === nh.x && s.y === nh.y)) {
-        setStatus('over');
-        return;
-      }
-
-      const grew = nh.x === food.current.x && nh.y === food.current.y;
-      const next = [nh, ...snake.current];
-      if (grew) {
-        setScore((sc) => sc + 1);
-        food.current = randFood(next);
-      } else {
-        next.pop();
-      }
-      snake.current = next;
+    let raf = 0;
+    let last = performance.now();
+    const frame = (now: number) => {
+      // a backgrounded window can hand us a huge gap; never jump more than 50ms
+      const dt = Math.min(50, now - last);
+      last = now;
+      game.current?.update(dt);
       draw();
-    }, SPEED);
-    return () => clearInterval(id);
+      if (statusRef.current === 'playing') raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
@@ -160,24 +133,30 @@ export function ArcadeModule() {
     return () => clearInterval(id);
   }, [status, spendBreak]);
 
-  // keyboard controls
+  // the game only moves while the window is on screen, but break time keeps
+  // draining, so leaving the window pauses the game
   useEffect(() => {
-    const map: Record<string, P> = {
-      ArrowUp: { x: 0, y: -1 },
-      ArrowDown: { x: 0, y: 1 },
-      ArrowLeft: { x: -1, y: 0 },
-      ArrowRight: { x: 1, y: 0 },
-      w: { x: 0, y: -1 },
-      s: { x: 0, y: 1 },
-      a: { x: -1, y: 0 },
-      d: { x: 1, y: 0 },
+    const away = () => {
+      if (statusRef.current === 'playing') setStatus('paused');
     };
+    const onVis = () => document.hidden && away();
+    window.addEventListener('blur', away);
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      window.removeEventListener('blur', away);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, []);
+
+  // keyboard: Space starts and pauses, everything else goes to the game
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       // don't steal keys while the user is typing (e.g. in the command bar)
       const el = e.target as HTMLElement | null;
       if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) {
         return;
       }
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.key === ' ') {
         e.preventDefault();
         if (statusRef.current === 'playing') setStatus('paused');
@@ -185,12 +164,7 @@ export function ArcadeModule() {
         else start();
         return;
       }
-      const nd = map[e.key];
-      if (!nd) return;
-      e.preventDefault();
-      const cur = dir.current;
-      if (nd.x === -cur.x && nd.y === -cur.y) return; // no instant reverse
-      nextDir.current = nd;
+      if (statusRef.current === 'playing' && game.current?.key(e.key)) e.preventDefault();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -201,9 +175,9 @@ export function ArcadeModule() {
 
   return (
     <Panel title="ARCADE" accent="arcade">
-      <div className="arcade">
-        <div className="arcade-stage">
-          <canvas ref={canvasRef} width={SIZE} height={SIZE} className="snake-canvas" />
+      <div className="arcade" ref={boxRef}>
+        <div className="arcade-stage" style={{ '--board': `${board}px` } as React.CSSProperties}>
+          <canvas ref={canvasRef} className="arcade-canvas" />
 
           {locked && status === 'idle' && (
             <div className="arcade-overlay">
@@ -216,9 +190,9 @@ export function ArcadeModule() {
           )}
           {!locked && status === 'idle' && (
             <div className="arcade-overlay">
-              <div className="ov-title">SNAKE</div>
+              <div className="ov-title">{def.name}</div>
               <div className="ov-sub">
-                <b>Space</b> or START to play · <b>Arrows / WASD</b> to steer
+                <b>Space</b> or START to play · {def.controls}
               </div>
             </div>
           )}
@@ -243,7 +217,20 @@ export function ArcadeModule() {
           )}
         </div>
 
-        <div className="arcade-side">
+        <div className="arcade-side" ref={sideRef}>
+          <div className="arcade-picker" role="group" aria-label="Pick a game">
+            {GAMES.map((g) => (
+              <button
+                key={g.id}
+                className={`arcade-pick ${g.id === def.id ? 'on' : ''}`}
+                aria-pressed={g.id === def.id}
+                disabled={status === 'playing' && g.id !== def.id}
+                onClick={() => pick(g.id)}
+              >
+                {g.name}
+              </button>
+            ))}
+          </div>
           <div className="arcade-stat">
             <span>SCORE</span>
             <b>{score}</b>

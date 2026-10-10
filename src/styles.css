@@ -1252,13 +1252,14 @@ textarea {
 }
 .arcade-stage {
   position: relative;
-  width: 420px;
-  height: 420px;
+  /* sized from ArcadeModule to fill the panel; 420px until measured */
+  width: var(--board, 420px);
+  height: var(--board, 420px);
   flex: none;
 }
-.snake-canvas {
-  width: 420px;
-  height: 420px;
+.arcade-canvas {
+  width: 100%;
+  height: 100%;
   border: 1px solid var(--accent);
   border-radius: 6px;
   box-shadow: 0 0 24px -6px var(--accent);
@@ -1290,11 +1291,41 @@ textarea {
 .ov-sub b {
   color: var(--text);
 }
+.arcade-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.arcade-pick {
+  flex: 1 1 auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--dim);
+  padding: 6px 10px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+.arcade-pick:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--accent);
+}
+.arcade-pick.on {
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px -2px var(--accent);
+}
+.arcade-pick:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
 .arcade-side {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-width: 170px;
+  width: 240px;
+  flex: none;
 }
 .arcade-stat {
   display: flex;
