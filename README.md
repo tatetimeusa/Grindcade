@@ -1,13 +1,13 @@
-# TermDeck
+# Grindcade
 
 **A to-do list, kanban board, calendar, notes and focus timer in one retro terminal window. Finish a focus session and you earn time in the arcade.**
 
-![TermDeck demo: add a task, drag it on the board, run a focus session, then play Snake with the break time it earned](docs/demo.gif)
+![Grindcade demo: add a task, drag it on the board, run a focus session, then play Snake with the break time it earned](docs/demo.gif)
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows-2dd4ee?style=for-the-badge)](https://github.com/tatetimeusa/TermDeck/releases/latest/download/TermDeck-windows-x64.zip)
-[![Download for macOS](https://img.shields.io/badge/Download-macOS-a3e635?style=for-the-badge)](https://github.com/tatetimeusa/TermDeck/releases/latest/download/TermDeck-mac-universal.zip)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows-2dd4ee?style=for-the-badge)](https://github.com/tatetimeusa/Grindcade/releases/latest/download/Grindcade-windows-x64.zip)
+[![Download for macOS](https://img.shields.io/badge/Download-macOS-a3e635?style=for-the-badge)](https://github.com/tatetimeusa/Grindcade/releases/latest/download/Grindcade-mac-universal.zip)
 
-Works offline, and your data stays on your computer. [All releases](https://github.com/tatetimeusa/TermDeck/releases)
+Works offline, and your data stays on your computer. [All releases](https://github.com/tatetimeusa/Grindcade/releases)
 
 ## How it works
 
@@ -48,14 +48,14 @@ The rest is feel: a boot intro down a wireframe tunnel, soft click sounds, optio
 
 ## Install
 
-**Windows:** download `TermDeck-windows-x64.zip`, unzip it anywhere and run `TermDeck.exe`.
+**Windows:** download `Grindcade-windows-x64.zip`, unzip it anywhere and run `Grindcade.exe`.
 
 The first time, Windows shows a blue "Windows protected your PC" notice because the app is not code-signed yet. Click **More info**, then **Run anyway**.
 
-**macOS:** download `TermDeck-mac-universal.zip`, unzip it and drag `TermDeck.app` into Applications. The app is not signed by Apple yet, so run this once in Terminal before the first launch:
+**macOS:** download `Grindcade-mac-universal.zip`, unzip it and drag `Grindcade.app` into Applications. The app is not signed by Apple yet, so run this once in Terminal before the first launch:
 
 ```
-xattr -cr /Applications/TermDeck.app
+xattr -cr /Applications/Grindcade.app
 ```
 
 ## Sync (optional)
