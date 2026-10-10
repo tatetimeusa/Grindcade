@@ -4,6 +4,7 @@ import { Panel } from '../components/Panel';
 import { fmtTimer } from '../util';
 import { GAMES, findGame } from '../arcade';
 import { ARCADE_SIZE, type Game } from '../arcade/types';
+import { setMusicIntensity, startMusic, stopMusic } from '../arcade/music';
 
 type Status = 'idle' | 'playing' | 'paused' | 'over';
 
@@ -15,6 +16,9 @@ export function ArcadeModule() {
   const best = useStore((s) => (s.arcadeGame === 'snake' ? s.bestSnake : (s.bestScores[s.arcadeGame] ?? 0)));
   const setBest = useStore((s) => s.setBestScore);
   const fxEnabled = useStore((s) => s.fxEnabled);
+  const musicEnabled = useStore((s) => s.musicEnabled);
+  const soundEnabled = useStore((s) => s.soundEnabled);
+  const toggleMusic = useStore((s) => s.toggleMusic);
 
   const def = findGame(gameId);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -116,6 +120,7 @@ export function ArcadeModule() {
       const dt = Math.min(50, now - last);
       last = now;
       game.current?.update(dt);
+      if (game.current?.intensity) setMusicIntensity(game.current.intensity());
       draw();
       if (statusRef.current === 'playing') raf = requestAnimationFrame(frame);
     };
@@ -123,6 +128,13 @@ export function ArcadeModule() {
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
+
+  // music runs only while a game is actually being played
+  useEffect(() => {
+    if (status === 'playing' && musicEnabled && soundEnabled && def.music) startMusic(def.music);
+    else stopMusic();
+  }, [status, musicEnabled, soundEnabled, def]);
+  useEffect(() => () => stopMusic(), []); // leaving the ARCADE
 
   // spend banked break time while playing; when it runs out, break's over
   useEffect(() => {
@@ -264,6 +276,15 @@ export function ArcadeModule() {
               {status === 'over' ? '[ PLAY AGAIN ]' : '[ START ]'}
             </button>
           )}
+
+          <button
+            className={`arcade-pick arcade-music ${musicEnabled && soundEnabled ? 'on' : ''}`}
+            onClick={toggleMusic}
+            disabled={!soundEnabled}
+            title={soundEnabled ? 'arcade music on or off' : 'turn SND on to hear music'}
+          >
+            MUSIC:{musicEnabled && soundEnabled ? 'ON' : 'OFF'}
+          </button>
 
           <p className="arcade-hint dim">
             Playing spends the break time you bank by finishing focus sessions. Earn it, then enjoy it.

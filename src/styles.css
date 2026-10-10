@@ -1316,6 +1316,9 @@ textarea {
   border-color: var(--accent);
   box-shadow: 0 0 10px -2px var(--accent);
 }
+.arcade-music {
+  flex: none;
+}
 .arcade-pick:disabled {
   opacity: 0.4;
   cursor: default;

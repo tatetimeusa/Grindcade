@@ -1,4 +1,5 @@
 import { ARCADE_SIZE as S, type GameDef } from './types';
+import { nightDriveTrack } from './tracks';
 
 // NIGHT DRIVE: three lanes down the neon grid toward a striped sun. Dodge the
 // traffic, grab the orbs, go faster the longer you last.
@@ -38,6 +39,7 @@ export const drive: GameDef = {
   id: 'drive',
   name: 'NIGHT DRIVE',
   controls: 'Left / Right or A / D to change lanes',
+  music: nightDriveTrack,
   create: (ctx, hooks) => {
     let lane = 1;
     let px = 0; // player's world X, eases toward its lane
@@ -338,6 +340,8 @@ export const drive: GameDef = {
         ctx.font = '12px "Cascadia Code", Consolas, monospace';
         ctx.fillText(`${Math.round(speed * 10)} km/h`, 10, S - 10);
       },
+
+      intensity: () => (speed - 9) / (26 - 9),
 
       key: (k) => {
         if (k === 'ArrowLeft' || k === 'a' || k === 'A') {

@@ -1,4 +1,5 @@
 import { ARCADE_SIZE as S, type GameDef } from './types';
+import { bricksTrack } from './tracks';
 
 // BRICKS: paddle, ball, a wall of neon bricks. Clear the wall for the next,
 // faster one. Three balls. Some bricks drop a pickup: six help, two hurt
@@ -62,6 +63,7 @@ export const bricks: GameDef = {
   id: 'bricks',
   name: 'BRICKS',
   controls: 'Left / Right to move · Up to fire or launch',
+  music: bricksTrack,
   create: (ctx, hooks) => {
     let px = S / 2; // paddle centre
     let balls: Ball[] = [];
@@ -388,6 +390,8 @@ export const bricks: GameDef = {
           ctx.fillText(`${PICKUPS[k].label} ${Math.ceil(timers[k])}`, 10 + i * 66, S - 6);
         });
       },
+
+      intensity: () => Math.min(1, (level - 1) / 4),
 
       key: (k) => {
         if (LEFT_KEYS.has(k)) held.left = true;

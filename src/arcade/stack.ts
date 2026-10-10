@@ -1,4 +1,5 @@
 import { ARCADE_SIZE as S, type GameDef } from './types';
+import { stackTrack } from './tracks';
 
 // STACK: a slab slides back and forth over the tower. Drop it; whatever hangs
 // past the slab below is sliced off and falls, so the next one is narrower.
@@ -21,6 +22,7 @@ export const stack: GameDef = {
   id: 'stack',
   name: 'STACK',
   controls: 'Enter or ↓ to drop',
+  music: stackTrack,
   create: (ctx, hooks) => {
     let tower: Slab[] = [];
     let moving: Slab = { x: 0, w: BASE_W, color: COLORS[1] };
@@ -171,6 +173,9 @@ export const stack: GameDef = {
           ctx.globalAlpha = 1;
         }
       },
+
+      // the music fills out as the tower climbs; full band by 30 slabs
+      intensity: () => Math.min(1, (tower.length - 1) / 30),
 
       key: (k) => {
         if (!DROP_KEYS.has(k)) return false;

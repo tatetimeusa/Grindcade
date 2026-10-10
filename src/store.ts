@@ -194,6 +194,7 @@ interface Store {
   bestSnake: number;
   bestScores: Record<string, number>; // every arcade game but Snake, which keeps bestSnake
   arcadeGame: string; // last game picked in the ARCADE, per machine
+  musicEnabled: boolean; // arcade music, per machine; silent anyway when SND is off
   settings: FocusSettings;
 
   // focus garden
@@ -273,6 +274,7 @@ interface Store {
   setBestSnake: (n: number) => void;
   setBestScore: (game: string, n: number) => void;
   setArcadeGame: (game: string) => void;
+  toggleMusic: () => void;
 }
 
 export const useStore = create<Store>()(
@@ -296,6 +298,7 @@ export const useStore = create<Store>()(
       bestSnake: 0,
       bestScores: {},
       arcadeGame: 'snake',
+      musicEnabled: true,
       settings: { workMin: 25, breakMin: 5 },
 
       plant: null,
@@ -642,6 +645,8 @@ export const useStore = create<Store>()(
 
       setArcadeGame: (game) => set({ arcadeGame: game }),
 
+      toggleMusic: () => set((s) => ({ musicEnabled: !s.musicEnabled })),
+
       offerPlants: () =>
         set((s) => (s.plant || s.plantChoices.length ? {} : { plantChoices: drawPlantChoices() })),
 
@@ -674,6 +679,7 @@ export const useStore = create<Store>()(
         bestSnake: s.bestSnake,
         bestScores: s.bestScores,
         arcadeGame: s.arcadeGame,
+        musicEnabled: s.musicEnabled,
         settings: s.settings,
         plant: s.plant,
         finishedPlants: s.finishedPlants,

@@ -2,6 +2,8 @@
 // break-time clock, start/pause, the overlays and the best scores; a game only
 // simulates, draws on its canvas and reports its score.
 
+import type { Track } from './music';
+
 // every game draws in the same 420-unit square; the cabinet scales it to fit
 export const ARCADE_SIZE = 420;
 
@@ -21,11 +23,14 @@ export interface Game {
   // releaseKeys when play stops so nothing stays held through a pause
   keyUp?: (key: string) => void;
   releaseKeys?: () => void;
+  // 0..1, how hard the game is pushing right now; drives the music's tempo
+  intensity?: () => number;
 }
 
 export interface GameDef {
   id: string;
   name: string;
   controls: string; // shown on the start screen
+  music?: Track; // plays while the game runs, if MUSIC and SND are on
   create: (ctx: CanvasRenderingContext2D, hooks: GameHooks) => Game;
 }

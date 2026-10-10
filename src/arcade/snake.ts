@@ -1,4 +1,5 @@
 import { ARCADE_SIZE, type GameDef } from './types';
+import { snakeTrack } from './tracks';
 
 const CELLS = 21;
 const CELL = ARCADE_SIZE / CELLS; // 20px
@@ -21,6 +22,7 @@ export const snake: GameDef = {
   id: 'snake',
   name: 'SNAKE',
   controls: 'Arrows / WASD to steer',
+  music: snakeTrack,
   create: (ctx, hooks) => {
     let body: P[] = [];
     let dir: P = { x: 1, y: 0 };
@@ -108,6 +110,8 @@ export const snake: GameDef = {
         });
         ctx.shadowBlur = 0;
       },
+
+      intensity: () => Math.min(1, score / 25),
 
       key: (k) => {
         const nd = DIRS[k];
