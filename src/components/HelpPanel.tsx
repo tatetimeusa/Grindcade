@@ -31,6 +31,8 @@ const KEYS: [string, string][] = [
   ['◂ ▸ on a card', 'BOARD: move it to the next column (Tab to them)'],
   ['Space', 'ARCADE: start or pause Snake'],
   ['Arrows / WASD', 'ARCADE: steer'],
+  ['Ctrl + / Ctrl -', 'make everything bigger or smaller (Cmd on Mac)'],
+  ['Ctrl 0', 'back to the default size'],
 ];
 
 const TOP_BAR: [string, string][] = [
