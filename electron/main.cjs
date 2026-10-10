@@ -39,8 +39,11 @@ function createWindow() {
 // Keep the data folder from the TermDeck days. Electron names it after the
 // app, so without this the rename to Grindcade would open every existing user
 // on an empty deck. Must run before the single-instance lock, which lives in
-// this folder too.
-app.setPath('userData', path.join(app.getPath('appData'), 'termdeck'));
+// this folder too. An explicit --user-data-dir (the demo shortcut's empty
+// filming profile) still wins.
+if (!app.commandLine.hasSwitch('user-data-dir')) {
+  app.setPath('userData', path.join(app.getPath('appData'), 'termdeck'));
+}
 
 // gives the app a stable identity so renderer Notifications become real
 // Windows toasts (and don't show up as a generic "electron.app" sender)
