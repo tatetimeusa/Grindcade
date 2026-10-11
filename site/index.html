@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grindcade: a retro terminal for your whole day</title>
+  <meta name="description" content="To-dos, a kanban board, a calendar, notes and a focus timer in one retro terminal window. Finish a focus session and you earn time in a five-game arcade. Free for Windows and Mac.">
+  <meta property="og:title" content="Grindcade">
+  <meta property="og:description" content="Productivity apps are boring. Yours shouldn't be. Work earns play.">
+  <meta property="og:image" content="https://grindcade.com/assets/arcade.webp">
+  <meta property="og:url" content="https://grindcade.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0a0614">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Monoton&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="crt" aria-hidden="true"></div>
+
+  <!-- ===== HERO: synthwave horizon ===== -->
+  <header class="hero">
+    <div class="sky" aria-hidden="true">
+      <div class="stars"></div>
+      <div class="sun"></div>
+      <div class="mountains"></div>
+    </div>
+    <div class="floor" aria-hidden="true"><div class="grid"></div></div>
+
+    <nav class="topbar">
+      <span class="brand">GRINDCADE<span class="cursor">_</span></span>
+      <span class="chips">
+        <a class="chip" href="#modules">MODULES</a>
+        <a class="chip" href="#arcade">ARCADE</a>
+        <a class="chip" href="#price">PRICE</a>
+        <a class="chip" href="https://github.com/tatetimeusa/Grindcade">GITHUB</a>
+      </span>
+    </nav>
+
+    <div class="hero-inner">
+      <p class="boot" id="boot" aria-hidden="true"></p>
+      <h1 class="wordmark">Grindcade</h1>
+      <p class="tagline">Productivity apps are boring. <span>Yours shouldn't be.</span></p>
+      <p class="lede">To-dos, a kanban board, a calendar, notes and a focus timer in one retro terminal window. Finish a focus session and you earn time in a five-game arcade.</p>
+
+      <div class="cta">
+        <a class="btn btn-win" id="dl-win" href="https://github.com/tatetimeusa/Grindcade/releases/latest/download/Grindcade-windows-setup.exe">[ DOWNLOAD FOR WINDOWS ]</a>
+        <a class="btn btn-mac" id="dl-mac" href="https://github.com/tatetimeusa/Grindcade/releases/latest/download/Grindcade-mac-universal.zip">[ DOWNLOAD FOR MAC ]</a>
+      </div>
+      <p class="fine">Free. Works offline. Your data stays on your computer. <a href="https://github.com/tatetimeusa/Grindcade/releases/latest">v0.9.0 release notes</a></p>
+
+      <figure class="monitor">
+        <div class="bezel">
+          <img id="shot" src="assets/focus.webp" width="1440" height="900" alt="Grindcade's FOCUS screen: a 25 minute timer above a neon grid where a garden of plants grows">
+        </div>
+        <figcaption id="shot-cap">FOCUS: every finished session grows your garden</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== THE RULES ===== -->
+    <section class="rules wrap" aria-labelledby="rules-h">
+      <h2 id="rules-h" class="sec-h"><span>$</span> cat rules.txt</h2>
+      <div class="term">
+        <p><b class="c-cyan">&gt; RULE 1:</b> one connected system. Add a task once and it shows up on the board, the calendar and the focus timer.</p>
+        <p><b class="c-magenta">&gt; RULE 2:</b> work earns play. Finished focus sessions bank break time, and break time is the only thing that unlocks the arcade.</p>
+        <p><b class="c-green">&gt; RULE 3:</b> your deck is yours. No account, no cloud, no subscription. It runs offline and saves to your own computer.</p>
+        <p class="dim">&gt; <span class="blink">_</span></p>
+      </div>
+    </section>
+
+    <!-- ===== MODULES ===== -->
+    <section id="modules" class="wrap" aria-labelledby="mod-h">
+      <h2 id="mod-h" class="sec-h"><span>$</span> ls modules/</h2>
+      <p class="sec-sub">Nine modules, one list of tasks. Press <kbd>1</kbd> to <kbd>9</kbd> to jump between them, or <kbd>/</kbd> to type a command.</p>
+      <div class="cards">
+        <button class="card" style="--a:#3ee5ff" data-shot="todo" data-cap="TODO: tasks with priority and due dates"><span class="k">[1]</span><b>TODO</b><span>Tasks with priority and due dates. Check them off, filter the list.</span></button>
+        <button class="card" style="--a:#f18dff" data-shot="board" data-cap="BOARD: drag cards from To Do to Doing to Done"><span class="k">[2]</span><b>BOARD</b><span>Kanban columns. Drop a card on Done and the task is finished.</span></button>
+        <button class="card" style="--a:#5cf593" data-shot="calendar" data-cap="CALENDAR: due dates, reminders and goal check-ins on one month"><span class="k">[3]</span><b>CALENDAR</b><span>A month view of every dated task, goal deadline and reminder.</span></button>
+        <button class="card" style="--a:#ffc052" data-shot="notes" data-cap="NOTES: plain notes that save as you type"><span class="k">[4]</span><b>NOTES</b><span>As many notes as you want, saved as you type.</span></button>
+        <button class="card" style="--a:#ff8797" data-shot="focus" data-cap="FOCUS: every finished session grows your garden"><span class="k">[5]</span><b>FOCUS</b><span>A Pomodoro timer that logs time to the task and grows your garden.</span></button>
+        <button class="card" style="--a:#b8f24a" data-shot="arcade" data-cap="ARCADE: five games, paid for with break time you earned"><span class="k">[6]</span><b>ARCADE</b><span>Five games with their own music. Locked until you've earned the break time.</span></button>
+        <button class="card" style="--a:#bda6ff" data-shot="goals" data-cap="GOALS: any date range, with a progress bar per goal"><span class="k">[7]</span><b>GOALS</b><span>Goals over any date range, with a bar that fills as you check in.</span></button>
+        <button class="card" style="--a:#ffa652" data-shot="streaks" data-cap="STREAKS: daily check-offs and the 100,000 rivals"><span class="k">[8]</span><b>STREAKS</b><span>Daily check-offs, a fire counter, and you vs 100,000 imaginary rivals.</span></button>
+        <button class="card" style="--a:#ffe66e" data-shot="reminders" data-cap="REMINDERS: one-off or repeating, with real notifications"><span class="k">[9]</span><b>REMINDERS</b><span>One-off or repeating, with popups, snooze and real notifications.</span></button>
+      </div>
+      <p class="hint">Click a module to see it on the screen up top.</p>
+    </section>
+
+    <!-- ===== ARCADE HOOK ===== -->
+    <section id="arcade" class="arcade wrap" aria-labelledby="arc-h">
+      <div class="arc-copy">
+        <h2 id="arc-h" class="neon">Work earns play.</h2>
+        <p>Every focus session you finish banks break time. Break time is the only thing that unlocks the arcade. Playing spends it, and when it runs out, you go back to work.</p>
+        <p>No willpower required. The games are the reward, and you can't get to them any other way.</p>
+        <ol class="loop">
+          <li><span>01</span> pick a task</li>
+          <li><span>02</span> finish a focus session</li>
+          <li><span>03</span> bank the break</li>
+          <li><span>04</span> spend it in the arcade</li>
+        </ol>
+      </div>
+      <div class="cab">
+        <div class="cab-top">INSERT FOCUS</div>
+        <img src="assets/game-drive.webp" width="560" height="560" loading="lazy" alt="Night Drive: a neon car on a grid road heading toward a striped synthwave sun">
+      </div>
+    </section>
+
+    <!-- ===== THE GAMES ===== -->
+    <section id="games" class="wrap" aria-labelledby="games-h">
+      <h2 id="games-h" class="sec-h"><span>$</span> ls arcade/</h2>
+      <p class="sec-sub">Five games, each with its own soundtrack made right inside the app. The music speeds up when the game does.</p>
+      <div class="games">
+        <figure class="game" style="--a:#f18dff"><img src="assets/game-drive.webp" width="560" height="560" loading="lazy" alt="Night Drive"><figcaption><b>NIGHT DRIVE</b><span>Three lanes toward a striped sun. Dodge the traffic, grab the orbs.</span></figcaption></figure>
+        <figure class="game" style="--a:#4ade80"><img src="assets/game-tunnel.webp" width="560" height="560" loading="lazy" alt="Tunnel Run"><figcaption><b>TUNNEL RUN</b><span>Fly the wireframe tunnel from the boot intro. Find the gap in every ring.</span></figcaption></figure>
+        <figure class="game" style="--a:#3ee5ff"><img src="assets/game-bricks.webp" width="560" height="560" loading="lazy" alt="Bricks"><figcaption><b>BRICKS</b><span>Paddle, ball, neon walls. Eight pickups, two of them worth dodging.</span></figcaption></figure>
+        <figure class="game" style="--a:#ffc052"><img src="assets/game-stack.webp" width="560" height="560" loading="lazy" alt="Stack"><figcaption><b>STACK</b><span>Drop the slab on the tower. Whatever hangs over gets sliced off.</span></figcaption></figure>
+        <figure class="game" style="--a:#b8f24a"><img src="assets/game-snake.webp" width="560" height="560" loading="lazy" alt="Snake"><figcaption><b>SNAKE</b><span>The classic. Eat, grow, don't hit yourself.</span></figcaption></figure>
+      </div>
+    </section>
+
+    <!-- ===== GARDEN ===== -->
+    <section class="garden wrap" aria-labelledby="gar-h">
+      <h2 id="gar-h" class="sec-h"><span>$</span> ./garden --status</h2>
+      <div class="term">
+        <p>Under the focus timer sits a neon grid, and a plant grows on it. <b class="c-green">One level per finished session, twelve levels per plant.</b></p>
+        <p>Full grown, it joins the grid for good and you pick the next one from five random choices: fern, cactus, bonsai, sunflower, tulip, palm, vine or cherry blossom.</p>
+        <p>Quit a session early with RESET or SKIP and the growing plant loses a level. <b class="c-red">It never dies.</b> Months later the grid is a record of every hour you put in.</p>
+      </div>
+    </section>
+
+    <!-- ===== TRY IT: fake prompt ===== -->
+    <section class="try wrap" aria-labelledby="try-h">
+      <h2 id="try-h" class="sec-h"><span>$</span> try the command bar</h2>
+      <p class="sec-sub">The app runs on a command bar. So does this page. Type <kbd>/help</kbd>.</p>
+      <div class="console" id="console">
+        <div class="out" id="out" aria-live="polite">
+          <p class="dim">grindcade web shell. type /help for commands.</p>
+        </div>
+        <form class="prompt" id="prompt" autocomplete="off">
+          <label for="cmd">grindcade <span class="c-cyan">&gt;</span></label>
+          <input id="cmd" name="cmd" spellcheck="false" placeholder="/download" aria-label="Command">
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== PRICE ===== -->
+    <section id="price" class="wrap" aria-labelledby="price-h">
+      <h2 id="price-h" class="sec-h"><span>$</span> cat pricing.txt</h2>
+      <div class="prices">
+        <div class="price">
+          <p class="p-name">GRINDCADE</p>
+          <p class="p-amt">$0</p>
+          <ul>
+            <li>All nine modules</li>
+            <li>Five arcade games, with music</li>
+            <li>The focus garden</li>
+            <li>Runs offline, no account</li>
+            <li>Windows and Mac</li>
+          </ul>
+          <a class="btn btn-win" href="#top" data-dl>[ DOWNLOAD ]</a>
+        </div>
+        <div class="price soon">
+          <p class="p-name">GRINDCADE+ <span class="tag">COMING WITH 1.0</span></p>
+          <p class="p-amt">$3.99 <small>a month</small></p>
+          <p class="p-alt">or $29 a year</p>
+          <ul>
+            <li>Sync: your deck on every computer</li>
+            <li>Every new arcade game as it lands</li>
+            <li>New themes for the whole app</li>
+            <li>Cancel anytime</li>
+          </ul>
+          <p class="dim small">Planned for early 2027. The app itself stays free.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== INSTALL NOTES ===== -->
+    <section class="wrap install" aria-labelledby="inst-h">
+      <h2 id="inst-h" class="sec-h"><span>$</span> man install</h2>
+      <div class="term">
+        <p><b class="c-cyan">WINDOWS</b> &nbsp;Run the installer. It installs for you only, no admin prompt. The app isn't code-signed yet, so Windows may show "Windows protected your PC". Click <b>More info</b>, then <b>Run anyway</b>.</p>
+        <p><b class="c-lime">MAC</b> &nbsp;Unzip and drag Grindcade into Applications. The app isn't signed by Apple yet, so run this once in Terminal before the first launch:</p>
+        <pre><code>xattr -cr /Applications/Grindcade.app</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot wrap">
+    <p><span class="brand">GRINDCADE<span class="cursor">_</span></span></p>
+    <p class="dim">Built by one person. Source on <a href="https://github.com/tatetimeusa/Grindcade">GitHub</a>.</p>
+    <p class="dim small">&copy; 2026 Grindcade</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
