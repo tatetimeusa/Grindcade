@@ -1,7 +1,7 @@
 {
   "name": "grindcade",
   "private": true,
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "A retro-terminal command center for tasks, kanban, calendar, focus timer and a Snake arcade.",
   "author": "Grindcade",
   "type": "module",
