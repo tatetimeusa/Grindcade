@@ -299,6 +299,19 @@ main { position: relative; }
 .price ul { list-style: none; padding: 0; margin: 0 0 18px; }
 .price li::before { content: "+ "; color: var(--green); }
 
+.signup {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0 12px;
+  border-top: 1px solid var(--border); padding-top: 16px;
+}
+.signup label { white-space: nowrap; }
+.signup input[type="email"] {
+  flex: 1; min-width: 200px; background: #070a10; border: 1px solid var(--border); border-radius: 4px;
+  padding: 13px 12px; color: #fff; font: inherit; caret-color: var(--cyan); outline: none;
+}
+.signup input[type="email"]:focus { border-color: var(--cyan); box-shadow: 0 0 12px rgba(62,229,255,0.25); }
+.signup input::placeholder { color: var(--faint); }
+.signup .btn { cursor: pointer; }
+
 .foot { padding-top: 80px; padding-bottom: 48px; text-align: center; }
 .foot p { margin: 6px 0; }
 

@@ -76,6 +76,7 @@
       '  /games           the five games\n' +
       '  /garden          the focus garden\n' +
       '  /price           what it costs\n' +
+      '  /notify          get an email when 1.0 launches\n' +
       '  /github          source and releases\n' +
       '  /clear           clear the screen\n' +
       'or press 1-9 anywhere on the page to show a module.'),
@@ -94,6 +95,13 @@
     snake: () => print('arcade locked. earn it.', 'err'),
     garden: () => print('one level per finished session, 12 per plant. quit early and it loses a level. it never dies.'),
     price: () => print('free: all nine modules, offline, no account.\ngrindcade+: $3.99 a month or $29 a year, coming with 1.0. sync, new games, new themes.\nthe app itself stays free.'),
+    notify: () => {
+      print('one email when 1.0 launches. scrolling to the signup ...', 'ok');
+      setTimeout(() => {
+        document.getElementById('notify').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('notify-email').focus({ preventScroll: true });
+      }, 400);
+    },
     github: () => { print('opening github.com/tatetimeusa/Grindcade ...', 'ok'); setTimeout(() => go('https://github.com/tatetimeusa/Grindcade'), 500); },
     clear: () => { out.innerHTML = ''; },
     sudo: () => print('nice try.', 'err'),
