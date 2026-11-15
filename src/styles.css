@@ -107,6 +107,43 @@ textarea {
   padding: 10px;
 }
 
+/* the update strip gets its own row under the top bar, only while it shows */
+.app:has(> .update-banner) {
+  grid-template-rows: auto auto 1fr auto;
+  grid-template-areas:
+    'top top'
+    'note note'
+    'side main'
+    'cmd cmd';
+}
+.update-banner {
+  grid-area: note;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 14px;
+  border: 1px solid color-mix(in srgb, var(--lime) 50%, var(--border));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--lime) 7%, var(--panel));
+}
+.update-tag {
+  color: var(--lime);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.update-text {
+  color: var(--text);
+  flex: 1;
+}
+.update-actions {
+  display: flex;
+  gap: 8px;
+}
+.update-get {
+  color: var(--lime);
+  border-color: color-mix(in srgb, var(--lime) 50%, var(--border));
+}
+
 /* ===== top bar ===== */
 .topbar {
   grid-area: top;

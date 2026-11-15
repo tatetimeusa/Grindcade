@@ -16,6 +16,7 @@ import { StreaksModule } from './modules/StreaksModule';
 import { RemindersModule } from './modules/RemindersModule';
 import { ReminderPopup } from './components/ReminderPopup';
 import { HelpPanel } from './components/HelpPanel';
+import { UpdateBanner } from './components/UpdateBanner';
 import type { ModuleId } from './types';
 
 const moduleKeys: Record<string, ModuleId> = {
@@ -137,6 +138,7 @@ export default function App() {
     <div className={`app${scanlines ? ' scanlines' : ''}${fxEnabled ? '' : ' no-fx'}`}>
       {introActive && <Intro onDone={() => setIntroActive(false)} />}
       <TopBar />
+      <UpdateBanner />
       <Sidebar />
       <main className="main">
         {activeModule === 'todo' && <TodoModule />}
