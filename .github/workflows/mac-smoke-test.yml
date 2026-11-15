@@ -61,6 +61,8 @@ jobs:
           sleep 3
 
       - name: Try opening a copy marked as downloaded (what a real user hits)
+        # backstop: Gatekeeper's warning waits for a click that never comes
+        timeout-minutes: 3
         run: |
           cp Grindcade-mac-universal.zip downloaded.zip
           xattr -w com.apple.quarantine "0081;$(printf %x $(date +%s));Safari;" downloaded.zip
@@ -70,8 +72,9 @@ jobs:
             echo "--- quarantine flag on the app"; xattr -l quarantined/Grindcade.app
             echo "--- Gatekeeper verdict on downloaded copy"; spctl -a -vv -t exec quarantined/Grindcade.app 2>&1 || true
           } | tee -a out/report.txt
-          open quarantined/Grindcade.app 2>&1 | tee -a out/report.txt || true
-          sleep 8
+          # in the background: `open` blocks while Gatekeeper's warning is on screen
+          open quarantined/Grindcade.app > out/open-log.txt 2>&1 &
+          sleep 10
           screencapture -x out/downloaded-copy-open.png || true
           if pgrep -f "quarantined/Grindcade.app" > /dev/null; then
             echo "RESULT: downloaded copy opened without a block" | tee -a out/report.txt
@@ -79,6 +82,7 @@ jobs:
             echo "RESULT: downloaded copy did not open (blocked by macOS)" | tee -a out/report.txt
           fi
           pkill -f "Grindcade.app/Contents/MacOS/Grindcade" || true
+          pkill -x open || true
 
       - name: Save screenshots and report
         if: always()
