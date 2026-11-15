@@ -13,7 +13,7 @@
     "electron": "electron .",
     "app": "vite build && electron .",
     "package": "vite build && electron-packager . Grindcade --platform=win32 --arch=x64 --out=release --overwrite --icon=build/icon.ico --prune=true --ignore=\"(^/src$|^/release$|tsconfig.*|vite.config.*|\\.zip$|\\.md$|^/build$|^/\\.env$|^/\\.github$|make-icon\\.ps1)\"",
-    "package:mac": "vite build && electron-packager . Grindcade --platform=darwin --arch=universal --out=release --overwrite --icon=build/icon.icns --app-bundle-id=com.tatetime.termdeck --prune=true --ignore=\"(^/src$|^/release$|tsconfig.*|vite.config.*|\\.zip$|\\.md$|^/build$|^/\\.env$|^/\\.github$|make-icon\\.ps1)\"",
+    "package:mac": "vite build && electron-packager . Grindcade --platform=darwin --arch=universal --out=release --overwrite --icon=build/icon.icns --app-bundle-id=com.termdeck.app --prune=true --ignore=\"(^/src$|^/release$|tsconfig.*|vite.config.*|\\.zip$|\\.md$|^/build$|^/\\.env$|^/\\.github$|make-icon\\.ps1)\"",
     "dist": "vite build && electron-builder --win"
   },
   "dependencies": {

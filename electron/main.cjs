@@ -78,7 +78,9 @@ function createWindow() {
     minHeight: MIN_H,
     backgroundColor: '#070a10',
     title: 'Grindcade',
-    icon: path.join(__dirname, '..', 'build', 'icon.ico'),
+    // build/ isn't packaged; installed builds use the icon baked into the
+    // .exe (Windows) or the .app bundle (Mac), so only dev needs this
+    ...(app.isPackaged ? {} : { icon: path.join(__dirname, '..', 'build', 'icon.ico') }),
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,
