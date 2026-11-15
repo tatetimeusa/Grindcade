@@ -74,9 +74,13 @@ jobs:
           } | tee -a out/report.txt
           # in the background: `open` blocks while Gatekeeper's warning is on screen
           open quarantined/Grindcade.app > out/open-log.txt 2>&1 &
-          sleep 10
-          screencapture -x out/downloaded-copy-open.png || true
-          if pgrep -f "quarantined/Grindcade.app" > /dev/null; then
+          # "Verifying..." shows first; the warning comes after it, so shoot a few times
+          for t in 10 25 45; do
+            sleep $((t - ${prev:-0})); prev=$t
+            screencapture -x "out/downloaded-copy-${t}s.png" || true
+          done
+          # match the app's own binary, not the `open` command that names the bundle
+          if pgrep -f "quarantined/Grindcade.app/Contents/MacOS/Grindcade" > /dev/null; then
             echo "RESULT: downloaded copy opened without a block" | tee -a out/report.txt
           else
             echo "RESULT: downloaded copy did not open (blocked by macOS)" | tee -a out/report.txt
