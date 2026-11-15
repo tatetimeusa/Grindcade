@@ -1,0 +1,88 @@
+# Runs the released Mac build on one of GitHub's Mac machines, since there is no Mac to test on.
+# Downloads the same zip the grindcade.com Mac button serves, launches it, takes screenshots,
+# and records what Gatekeeper says about a copy marked as downloaded from the internet.
+# Manual only: it never touches releases or the website.
+name: mac-smoke-test
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to test (blank = latest release)'
+        required: false
+        default: ''
+
+jobs:
+  smoke:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - name: Download the release zip (the grindcade.com Mac button path)
+        run: |
+          mkdir -p out
+          if [ -z "${{ inputs.tag }}" ]; then
+            URL="https://github.com/${{ github.repository }}/releases/latest/download/Grindcade-mac-universal.zip"
+          else
+            URL="https://github.com/${{ github.repository }}/releases/download/${{ inputs.tag }}/Grindcade-mac-universal.zip"
+          fi
+          echo "URL: $URL" | tee out/report.txt
+          curl -fL -o Grindcade-mac-universal.zip "$URL"
+          ls -l Grindcade-mac-universal.zip | tee -a out/report.txt
+          sw_vers | tee -a out/report.txt
+          uname -m | tee -a out/report.txt
+
+      - name: Unzip and inspect the app
+        run: |
+          ditto -x -k Grindcade-mac-universal.zip clean
+          APP=clean/Grindcade.app
+          {
+            echo "--- version"; defaults read "$PWD/$APP/Contents/Info" CFBundleShortVersionString
+            echo "--- bundle id"; defaults read "$PWD/$APP/Contents/Info" CFBundleIdentifier
+            echo "--- architectures"; lipo -archs "$APP/Contents/MacOS/Grindcade"
+            echo "--- signature"; codesign -dv "$APP" 2>&1
+            echo "--- signature check"; codesign --verify --deep --strict "$APP" 2>&1 && echo "signature OK"
+            echo "--- Gatekeeper verdict"; spctl -a -vv -t exec "$APP" 2>&1 || true
+          } | tee -a out/report.txt
+
+      - name: Launch the app and screenshot it
+        run: |
+          APP=clean/Grindcade.app
+          "$APP/Contents/MacOS/Grindcade" > out/app-log.txt 2>&1 &
+          for t in 10 20 35; do
+            sleep $((t - ${prev:-0})); prev=$t
+            screencapture -x "out/running-${t}s.png" || echo "screencapture failed at ${t}s" | tee -a out/report.txt
+          done
+          if pgrep -f "Grindcade.app/Contents/MacOS/Grindcade" > /dev/null; then
+            echo "RESULT: app still running after 35s" | tee -a out/report.txt
+          else
+            echo "RESULT: app NOT running after 35s (crashed or quit)" | tee -a out/report.txt
+          fi
+          pkill -f "Grindcade.app/Contents/MacOS/Grindcade" || true
+          sleep 3
+
+      - name: Try opening a copy marked as downloaded (what a real user hits)
+        run: |
+          cp Grindcade-mac-universal.zip downloaded.zip
+          xattr -w com.apple.quarantine "0081;$(printf %x $(date +%s));Safari;" downloaded.zip
+          ditto -x -k downloaded.zip quarantined
+          xattr -w com.apple.quarantine "0081;$(printf %x $(date +%s));Safari;" quarantined/Grindcade.app
+          {
+            echo "--- quarantine flag on the app"; xattr -l quarantined/Grindcade.app
+            echo "--- Gatekeeper verdict on downloaded copy"; spctl -a -vv -t exec quarantined/Grindcade.app 2>&1 || true
+          } | tee -a out/report.txt
+          open quarantined/Grindcade.app 2>&1 | tee -a out/report.txt || true
+          sleep 8
+          screencapture -x out/downloaded-copy-open.png || true
+          if pgrep -f "quarantined/Grindcade.app" > /dev/null; then
+            echo "RESULT: downloaded copy opened without a block" | tee -a out/report.txt
+          else
+            echo "RESULT: downloaded copy did not open (blocked by macOS)" | tee -a out/report.txt
+          fi
+          pkill -f "Grindcade.app/Contents/MacOS/Grindcade" || true
+
+      - name: Save screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: mac-smoke-test
+          path: out/
