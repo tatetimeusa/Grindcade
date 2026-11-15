@@ -15,7 +15,7 @@
 
   // ---- boot line, typed once ----
   const boot = document.getElementById('boot');
-  const line = '> booting grindcade v0.9.0 ... 9 modules, 5 games online';
+  const line = '> booting grindcade v0.9.1 ... 9 modules, 5 games online';
   if (reduce) boot.textContent = line;
   else {
     let i = 0;
